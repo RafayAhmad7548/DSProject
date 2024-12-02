@@ -6,7 +6,7 @@ SRCS = $(wildcard src/*.cpp)
 
 OBJS = $(SRCS:.cpp=.o)
 
-EXEC = assg4
+EXEC = project
 
 all: $(EXEC)
 
