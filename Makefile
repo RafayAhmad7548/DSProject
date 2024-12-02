@@ -11,7 +11,7 @@ EXEC = project
 all: $(EXEC)
 
 $(EXEC): $(OBJS)
-	$(CXX) $(OBJS) -o $(EXEC) -lncurses
+	$(CXX) $(OBJS) -o $(EXEC)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
