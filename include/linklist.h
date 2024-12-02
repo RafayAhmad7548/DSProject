@@ -14,9 +14,9 @@ class NodeList
 template<typename T>
 class LinkList
 {
-    public:
     NodeList<T> *head;
 
+    public:
     LinkList(); 
     void insert(T v);  
     void deletevalue(T val); 
