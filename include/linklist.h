@@ -4,15 +4,11 @@ using namespace std;
 template<typename T>
 class NodeList
 {
-public:
+    public:
     NodeList *next;
     T value;
     
-    NodeList(T va)
-    {
-        next=NULL;
-        value=va;
-    }
+    NodeList(T va);  
 };
 
 template<typename T>

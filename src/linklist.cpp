@@ -1,6 +1,13 @@
 #include "linklist.h"
 
 template<typename T>
+NodeList<T>::NodeList(T va)
+{
+    next=NULL;
+    value=va;
+}
+
+template<typename T>
 LinkList<T>::LinkList() 
 {
     head=NULL;
