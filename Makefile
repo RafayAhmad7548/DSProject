@@ -1,0 +1,20 @@
+CXX = g++
+
+CXXFLAGS = -I./include -Wall -std=c++23 -g
+
+SRCS = $(wildcard src/*.cpp)
+
+OBJS = $(SRCS:.cpp=.o)
+
+EXEC = assg4
+
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	$(CXX) $(OBJS) -o $(EXEC) -lncurses
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(EXEC)
