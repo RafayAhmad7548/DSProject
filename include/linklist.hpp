@@ -1,6 +1,3 @@
-#include<iostream>
-using namespace std;
-
 template<typename T>
 class NodeList
 {
@@ -14,10 +11,11 @@ class NodeList
 template<typename T>
 class LinkList
 {
-    NodeList<T> *head;
 
     public:
+    NodeList<T> *head;
     LinkList(); 
+    LinkList(T v);
     void insert(T v);  
     void deletevalue(T val); 
     void display(); 
@@ -25,5 +23,4 @@ class LinkList
 
 template class LinkList<int>;
 template class LinkList<double>;
-template class LinkList<string>;
-
+template class LinkList<char>;

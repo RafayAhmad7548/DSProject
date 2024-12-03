@@ -1,16 +1,16 @@
-template <typename T>
-class HashNode {
-public:
-    T value;
-    HashNode(T v);
-};
+// template <typename T>
+// class HashNode {
+// public:
+//     T value;
+//     HashNode(T v);
+// };
 
-template <typename T>
+template <typename  T>
 class HashTable {
 private:
     int tablesize;
     int count;
-    HashNode<T>** table;
+    T** table;
     
     int hashFunction(T key);
     void resize();
@@ -18,9 +18,9 @@ public:
     HashTable();
     ~HashTable();
     
-    void insert(T value);
+    void insert(T key);
 
-    HashNode<T>*& search(T key);
+    T*& search(T key);
 
     void remove(T key);
 

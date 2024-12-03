@@ -1,16 +1,21 @@
-#include "linklist.h"
+#include <iostream>
+#include "linklist.hpp"
 
 template<typename T>
 NodeList<T>::NodeList(T va)
 {
-    next=NULL;
+    next=nullptr;
     value=va;
 }
 
 template<typename T>
 LinkList<T>::LinkList() 
 {
-    head=NULL;
+    head=nullptr;
+}
+template<typename T>
+LinkList<T>::LinkList(T v){
+    head=new NodeList<T>(v);
 }
 
 template<typename T>
@@ -18,7 +23,7 @@ void LinkList<T>::insert(T v)
 {
     NodeList<T> *newnode=new NodeList<T>(v);
     
-    if (head==NULL) 
+    if (head==nullptr) 
     {
         head=newnode;
         return;
@@ -27,8 +32,8 @@ void LinkList<T>::insert(T v)
     {
         NodeList<T> *temp=head;
     
-        while (temp->next!=NULL)
-        temp=temp->next;
+        while (temp->next!=nullptr)
+            temp=temp->next;
 
         temp->next=newnode;
     }
@@ -38,21 +43,21 @@ template<typename T>
 void LinkList<T>::deletevalue(T val)  
 {
     NodeList<T> *curr=head;
-    NodeList<T> *prev=NULL;
+    NodeList<T> *prev=nullptr;
     
-    if (curr==NULL)
-    return;
+    if (curr==nullptr)
+        return;
     
-    while (curr!=NULL && curr->value!=val)
+    while (curr!=nullptr && curr->value!=val)
     {
         prev=curr;
         curr=curr->next;
     }
       
     if (curr==head)
-    head=head->next; 
+        head=head->next; 
     else
-    prev->next=curr->next; 
+        prev->next=curr->next; 
     
     delete curr; 
 }    
@@ -62,17 +67,17 @@ void LinkList<T>::display()
 {
     NodeList<T> *temp=head;
     
-    if (temp==NULL)
-    return;
+    if (temp==nullptr)
+        return;
     
-    while (temp!=NULL)
+    while (temp!=nullptr)
     {
-        cout<<temp->value;
-        if (temp->next!=NULL) 
-        cout<<" , "; 
+        std::cout<<temp->value;
+        if (temp->next!=nullptr) 
+            std::cout<<" , "; 
 
         temp=temp->next;
     }
-    cout<<endl;
+    std::cout<<std::endl;
 }
 
