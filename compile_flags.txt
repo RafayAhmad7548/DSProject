@@ -1,4 +1,7 @@
 -I./include
--Wall
+-I/usr/include/qt6
+-I/usr/include/qt6/QtWidgets
+-I/usr/include/qt6/QtGui
+-I/usr/include/qt6/QtCore
 -std=c++23
 -g
