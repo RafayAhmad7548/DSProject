@@ -13,10 +13,6 @@ LinkList<T>::LinkList()
 {
     head=nullptr;
 }
-template<typename T>
-LinkList<T>::LinkList(T v){
-    head=new NodeList<T>(v);
-}
 
 template<typename T>
 void LinkList<T>::insert(T v) 

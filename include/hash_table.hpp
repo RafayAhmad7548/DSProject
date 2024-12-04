@@ -1,29 +1,34 @@
-// template <typename T>
-// class HashNode {
-// public:
-//     T value;
-//     HashNode(T v);
-// };
+#ifndef HASHTABLE_HPP
+#define HASHTABLE_HPP
 
-template <typename  T>
+#include "linklist.hpp"
+
+template<typename K, typename V>
+class HashNode{
+public:
+    K key;
+    V value;
+    HashNode(K key, V value);
+};
+
+template <typename K, typename V>
 class HashTable {
-private:
     int tablesize;
-    int count;
-    T** table;
+    HashNode<K, V>** table;
     
-    int hashFunction(T key);
+    int hashFunction(K key);
     void resize();
 public:
+    int count;
     HashTable();
     ~HashTable();
     
-    void insert(T key);
-
-    T*& search(T key);
-
-    void remove(T key);
+    void insert(K key, V val);
+    HashNode<K, V>*& get(K key);
+    void remove(K key);
 
 };
 
-template class HashTable<int>;
+template class HashTable<char, LinkList<char>>;
+
+#endif // HASHTABLE_HPP

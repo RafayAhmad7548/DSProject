@@ -1,34 +1,33 @@
 #include <hash_table.hpp>
-#include "linklist.hpp"
 
-// template <typename T>
-// T :: Tv){
-//     value = v; 
-// }
-template <typename T>
-HashTable<T>::HashTable() {
+template<typename K, typename V>
+HashNode<K, V>::HashNode(K key, V value) : key(key), value(value){}
+
+template<typename K, typename V>
+HashTable<K, V>::HashTable() {
     tablesize = 10;
     count = 0;
-    table = new T*[tablesize];
-    for(int i = 0; i < tablesize; i++)
+    table = new HashNode<K, V>*[tablesize];
+    for(int i = 0; i < tablesize; i++){
         table[i] = nullptr;
+    }
 }
 
-template<>
-int HashTable<LinkList<char>>::hashFunction(LinkList<char> key){
-    return key.head->value % tablesize;
-}
+// template<>
+// int HashTable<LinkList<char>>::hashFunction(LinkList<char> key){
+//     return key.head->value % tablesize;
+// }
 
-template <typename T>
-int HashTable<T> :: hashFunction(T key){
+template<typename K, typename V>
+int HashTable<K, V>::hashFunction(K key){
     return key % tablesize;
 }
 
-template <typename T>
-void HashTable<T> :: resize(){
+template<typename K, typename V>
+void HashTable<K, V>::resize(){
     int oldSize = tablesize;
     tablesize += 10;
-    T** newTable = new T*[tablesize];
+    HashNode<K, V>** newTable = new HashNode<K, V>*[tablesize];
     for(int i = 0; i < tablesize; i++){
         newTable[i] = nullptr;
     }
@@ -39,33 +38,35 @@ void HashTable<T> :: resize(){
     delete[] table;
     table = newTable;
 }
-template <typename T>
-void HashTable<T> :: insert(T key) {
+
+template<typename K, typename V>
+void HashTable<K, V>::insert(K key, V value) {
     int hash = hashFunction(key);
     if (table[hash] != nullptr) {
         resize();
         hash = hashFunction(key);
     }
-    T* newNode = new T();
+    HashNode<K, V>* newNode = new HashNode(key, value);
     table[hash] = newNode;
     count++;
 }
 
-template <typename T>
-T*& HashTable<T> :: search(T key) {
+template<typename K, typename V>
+HashNode<K, V>*& HashTable<K, V>::get(K key) {
     int hash = hashFunction(key);
     return table[hash];
 }
 
-template <typename T>
-void HashTable<T> :: remove(T key) {
-    T* temp = search(key);
+template<typename K, typename V>
+void HashTable<K, V>::remove(K key) {
+    HashNode<K, V>*& temp = get(key);
     delete temp;
     temp = nullptr;
+    count--;
 }
 
-template <typename T>
-HashTable<T> :: ~HashTable() {
+template<typename K, typename V>
+HashTable<K, V>::~HashTable() {
     for (int i = 0; i < tablesize; i++) {
         delete table[i];
     }

@@ -1,13 +1,21 @@
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
+
 #include "linklist.hpp"
 #include "hash_table.hpp"
 
 template<typename  T>
 class Graph{
-    HashTable<LinkList<T>> adjList;
 public:
+    HashTable<T, LinkList<T>> adjList;
     Graph();
+    ~Graph();
     void addVertex(T data);
     void addEdge(T from, T to);
     void removeVertex(T data);
     void removeEdge(T from, T to);
 };
+
+template class Graph<char>;
+
+#endif // GRAPH_HPP
