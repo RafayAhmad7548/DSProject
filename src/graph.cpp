@@ -17,8 +17,8 @@ void Graph<T>::addVertex(T data){
 }
 
 template<typename  T>
-void Graph<T>::addEdge(T from, T to){
-    adjList.get(from)->value.insert(to);
+void Graph<T>::addEdge(T from, T to, int weight){
+    adjList.get(from)->value.insert(to, weight);
 }
 
 template<typename T>

@@ -11,7 +11,7 @@ public:
     Graph();
     ~Graph();
     void addVertex(T data);
-    void addEdge(T from, T to);
+    void addEdge(T from, T to, int weight);
     void removeVertex(T data);
     void removeEdge(T from, T to);
 };

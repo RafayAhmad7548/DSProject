@@ -3,10 +3,10 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPoint>
-// #include <iostream>
 
 #include "graph.hpp"
 #include "linklist.hpp"
+#include "qpoint.h"
 using namespace std;
 
 class GraphDrawer : public QWidget{
@@ -20,16 +20,37 @@ protected:
             LinkList<char> edges = graph.adjList.get(keys[i])->value;
             NodeList<char>* temp = edges.head;
             while(temp != nullptr){
-                painter.drawLine(graph.adjList.get(keys[i])->center, graph.adjList.get(temp->value)->center);
+                drawArrow(painter, graph.adjList.get(keys[i])->center, graph.adjList.get(temp->value)->center, temp->weight);
                 temp = temp->next;
             }
         }
 
+        painter.setBrush(Qt::transparent);
         for(int i=0;i<graph.adjList.count;i++){
             painter.drawEllipse(graph.adjList.get(keys[i])->center, 20, 20);
             painter.drawText(graph.adjList.get(keys[i])->center, QString(keys[i]));
         }
         delete[] keys;
+    }
+
+    void drawArrow(QPainter& painter, QPointF start, QPointF end, int weight){
+        QLineF line(start, end);
+        QPointF mid(line.pointAt(0.5));
+        painter.drawLine(line);
+
+        double angle = std::atan2(line.dy(), -line.dx());
+        double arrowSize = 10;
+
+        QPointF arrowP1 = mid + QPointF(sin(angle + M_PI / 3) * arrowSize, cos(angle + M_PI / 3) * arrowSize);
+        QPointF arrowP2 = mid + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize, cos(angle + M_PI - M_PI / 3) * arrowSize);
+
+        painter.setBrush(Qt::black);
+        QPolygonF arrowHead;
+        arrowHead << mid << arrowP1 << arrowP2;
+        painter.drawPolygon(arrowHead);
+
+        QPointF textPos = mid + QPointF(10 * cos(angle), 10 * sin(angle));
+        painter.drawText(textPos, QString::number(weight));
     }
 
   public:
@@ -59,12 +80,12 @@ int main(int argc, char **argv){
     graph.addVertex('D');
     graph.addVertex('E');
 
-    graph.addEdge('A', 'B');
-    graph.addEdge('B', 'C');
-    graph.addEdge('A', 'C');
-    graph.addEdge('C', 'D');
-    graph.addEdge('D', 'E');
-    graph.addEdge('B', 'D');
+    graph.addEdge('A', 'B', 5);
+    graph.addEdge('B', 'C', 10);
+    graph.addEdge('A', 'C', 15);
+    graph.addEdge('C', 'D', 7);
+    graph.addEdge('D', 'E', 3);
+    graph.addEdge('B', 'D', 9);
     
 
     QApplication app(argc, argv);

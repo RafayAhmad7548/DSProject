@@ -2,10 +2,11 @@
 #include "linklist.hpp"
 
 template<typename T>
-NodeList<T>::NodeList(T va)
+NodeList<T>::NodeList(T va, int weight)
 {
     next=nullptr;
     value=va;
+    this->weight=weight;
 }
 
 template<typename T>
@@ -15,9 +16,9 @@ LinkList<T>::LinkList()
 }
 
 template<typename T>
-void LinkList<T>::insert(T v) 
+void LinkList<T>::insert(T v, int weight) 
 {
-    NodeList<T> *newnode=new NodeList<T>(v);
+    NodeList<T> *newnode=new NodeList<T>(v, weight);
     
     if (head==nullptr) 
     {

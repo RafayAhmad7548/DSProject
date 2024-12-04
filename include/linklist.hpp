@@ -7,8 +7,9 @@ class NodeList
     public:
     NodeList *next;
     T value;
+    int weight;
     
-    NodeList(T va);  
+    NodeList(T va, int weight=0);  
 };
 
 template<typename T>
@@ -17,7 +18,7 @@ class LinkList
     public:
     NodeList<T> *head;
     LinkList(); 
-    void insert(T v);  
+    void insert(T v, int weight=0);
     void deletevalue(T val); 
     void display(); 
 };
