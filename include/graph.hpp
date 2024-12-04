@@ -8,4 +8,6 @@ public:
     Graph();
     void addVertex(T data);
     void addEdge(T from, T to);
+    void removeVertex(T data);
+    void removeEdge(T from, T to);
 };
