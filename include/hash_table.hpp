@@ -1,6 +1,7 @@
 #ifndef HASHTABLE_HPP
 #define HASHTABLE_HPP
 
+#include <QPoint>
 #include "linklist.hpp"
 
 template<typename K, typename V>
@@ -8,6 +9,7 @@ class HashNode{
 public:
     K key;
     V value;
+    QPoint center;
     HashNode(K key, V value);
 };
 
@@ -26,6 +28,7 @@ public:
     void insert(K key, V val);
     HashNode<K, V>*& get(K key);
     void remove(K key);
+    K* getKeySet();
 
 };
 

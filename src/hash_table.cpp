@@ -13,11 +13,6 @@ HashTable<K, V>::HashTable() {
     }
 }
 
-// template<>
-// int HashTable<LinkList<char>>::hashFunction(LinkList<char> key){
-//     return key.head->value % tablesize;
-// }
-
 template<typename K, typename V>
 int HashTable<K, V>::hashFunction(K key){
     return key % tablesize;
@@ -63,6 +58,18 @@ void HashTable<K, V>::remove(K key) {
     delete temp;
     temp = nullptr;
     count--;
+}
+
+template<typename K, typename V>
+K* HashTable<K, V>::getKeySet(){
+    K* arr = new K[count];
+    for(int i=0, j=0;i<tablesize;i++){
+        if(table[i] != nullptr){
+            arr[j] = table[i]->key;
+            j++;
+        }
+    }
+    return arr;
 }
 
 template<typename K, typename V>

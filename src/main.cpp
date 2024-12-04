@@ -6,23 +6,35 @@
 // #include <iostream>
 
 #include "graph.hpp"
+#include "linklist.hpp"
 using namespace std;
 
 class GraphDrawer : public QWidget{
     Graph<char>& graph;
-    QPoint* centers;
 protected:
     void paintEvent(QPaintEvent* event) override{
         QPainter painter(this);
+        char* keys = graph.adjList.getKeySet();
+
         for(int i=0;i<graph.adjList.count;i++){
-            painter.drawEllipse(centers[i], 20, 20);
-            // painter.drawText(centers[i], QString());
+            LinkList<char> edges = graph.adjList.get(keys[i])->value;
+            NodeList<char>* temp = edges.head;
+            while(temp != nullptr){
+                painter.drawLine(graph.adjList.get(keys[i])->center, graph.adjList.get(temp->value)->center);
+                temp = temp->next;
+            }
         }
+
+        for(int i=0;i<graph.adjList.count;i++){
+            painter.drawEllipse(graph.adjList.get(keys[i])->center, 20, 20);
+            painter.drawText(graph.adjList.get(keys[i])->center, QString(keys[i]));
+        }
+        delete[] keys;
     }
 
   public:
     GraphDrawer(Graph<char> &graph, QWidget* parent=nullptr) : QWidget(parent), graph(graph){
-        centers = new QPoint[graph.adjList.count];
+        char* keys = graph.adjList.getKeySet();
         int radius = 200;
         int centerX = width()/2;
         int centerY = height()/2;
@@ -31,8 +43,9 @@ protected:
             double angle = 2 * M_PI * i / graph.adjList.count;
             int x = centerX + radius * cos(angle);
             int y = centerY + radius * sin(angle);
-            centers[i] = QPoint(x, y);
+            graph.adjList.get(keys[i])->center = QPoint(x, y);
         }
+        delete[] keys;
     }
 };
 

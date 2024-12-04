@@ -10,6 +10,7 @@ Graph<T>::~Graph(){
 
 }
 
+//TODO: add checks if already exist or not
 template<typename  T>
 void Graph<T>::addVertex(T data){
     adjList.insert(data, LinkList<T>());
