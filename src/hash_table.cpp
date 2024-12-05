@@ -27,8 +27,10 @@ void HashTable<K, V>::resize(){
         newTable[i] = nullptr;
     }
     for(int i = 0; i < oldSize; i++){
-        newTable[i] = table[i];
-        delete table[i];
+        if(table[i] != nullptr){
+            int hash = hashFunction(table[i]->key);
+            newTable[hash] = table[i];
+        }
     }
     delete[] table;
     table = newTable;
@@ -37,7 +39,7 @@ void HashTable<K, V>::resize(){
 template<typename K, typename V>
 void HashTable<K, V>::insert(K key, V value) {
     int hash = hashFunction(key);
-    if (table[hash] != nullptr) {
+    while (table[hash] != nullptr) {
         resize();
         hash = hashFunction(key);
     }
