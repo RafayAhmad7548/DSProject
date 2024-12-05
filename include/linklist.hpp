@@ -19,7 +19,8 @@ class LinkList
     NodeList<T> *head;
     LinkList(); 
     void insert(T v, int weight=0);
-    void deletevalue(T val); 
+    void deletevalue(T val);
+    bool contains(T val);
     void display(); 
 };
 

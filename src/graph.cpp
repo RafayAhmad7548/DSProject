@@ -10,15 +10,18 @@ Graph<T>::~Graph(){
 
 }
 
-//TODO: add checks if already exist or not
 template<typename  T>
 void Graph<T>::addVertex(T data){
-    adjList.insert(data, LinkList<T>());
+    if(adjList.get(data) != nullptr){
+        adjList.insert(data, LinkList<T>());
+    }
 }
 
 template<typename  T>
 void Graph<T>::addEdge(T from, T to, int weight){
-    adjList.get(from)->value.insert(to, weight);
+    if(from != to && !adjList.get(from)->value.contains(to)){
+        adjList.get(from)->value.insert(to, weight);
+    }
 }
 
 template<typename T>

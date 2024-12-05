@@ -1,15 +1,8 @@
-#include <QApplication>
-#include <QWidget>
-#include <QPainter>
-#include <QPaintEvent>
-#include <QPoint>
-#include <QVBoxLayout>
-#include <QInputDialog>
-#include <QPushButton>
 #include <climits>
 
 #include "graph.hpp"
 #include "linklist.hpp"
+#include "qapplication.h"
 #include "qboxlayout.h"
 #include "qdebug.h"
 #include "qdialog.h"
@@ -17,8 +10,10 @@
 #include "qinputdialog.h"
 #include "qlineedit.h"
 #include "qlogging.h"
+#include "qobject.h"
 #include "qpainter.h"
 #include "qpoint.h"
+#include "qpushbutton.h"
 #include "qwidget.h"
 using namespace std;
 
@@ -115,7 +110,6 @@ protected:
 
 int main(int argc, char **argv){
 
-    
     Graph<char> graph;
     graph.addVertex('A');
     graph.addVertex('B');
@@ -135,13 +129,15 @@ int main(int argc, char **argv){
     QWidget window;
 
     GraphDrawer drawer(graph);
-    QPushButton button("add vertex");
+    QPushButton addVertex("Add Vertex");
+    QPushButton removeVertex("Remove Vertex");
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(&drawer);
-    layout->addWidget(&button);
+    layout->addWidget(&addVertex);
+    layout->addWidget(&removeVertex);
 
-    QObject::connect(&button, &QPushButton::clicked, [&graph, &drawer](){
+    QObject::connect(&addVertex, &QPushButton::clicked, [&graph, &drawer](){
         bool ok;
         string vertex = QInputDialog::getText(nullptr, "", "Enter Vertex char", QLineEdit::Normal, "", &ok).toStdString();
         if(ok && !vertex.empty()){
@@ -149,6 +145,9 @@ int main(int argc, char **argv){
             drawer.init();
             drawer.repaint();
         }
+    });
+    QObject::connect(&removeVertex, &QPushButton::clicked, [](){
+
     });
 
     window.setLayout(layout);

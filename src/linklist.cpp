@@ -50,6 +50,9 @@ void LinkList<T>::deletevalue(T val)
         prev=curr;
         curr=curr->next;
     }
+
+    if (curr==nullptr)
+        return;
       
     if (curr==head)
         head=head->next; 
@@ -57,7 +60,17 @@ void LinkList<T>::deletevalue(T val)
         prev->next=curr->next; 
     
     delete curr; 
-}    
+}
+
+template<typename T>
+bool LinkList<T>::contains(T val){
+    NodeList<T> *temp=head;
+    while(temp != nullptr){
+        if(temp->value == val) return true;
+        temp = temp->next;
+    }
+    return false;
+}
 
 template<typename T>
 void LinkList<T>::display()  
