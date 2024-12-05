@@ -60,6 +60,11 @@ void HashTable<K, V>::remove(K key) {
     delete temp;
     temp = nullptr;
     count--;
+    for(int i=0;i<tablesize;i++){
+        if(table[i] != nullptr){
+            table[i]->value.deletevalue(key);
+        }
+    }
 }
 
 template<typename K, typename V>

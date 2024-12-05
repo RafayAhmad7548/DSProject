@@ -12,7 +12,7 @@ Graph<T>::~Graph(){
 
 template<typename  T>
 void Graph<T>::addVertex(T data){
-    if(adjList.get(data) != nullptr){
+    if(adjList.get(data) == nullptr){
         adjList.insert(data, LinkList<T>());
     }
 }

@@ -2,10 +2,10 @@
 
 #include "graph.hpp"
 #include "linklist.hpp"
+#include "qaction.h"
 #include "qapplication.h"
 #include "qboxlayout.h"
 #include "qdebug.h"
-#include "qdialog.h"
 #include "qevent.h"
 #include "qinputdialog.h"
 #include "qlineedit.h"
@@ -15,6 +15,7 @@
 #include "qpoint.h"
 #include "qpushbutton.h"
 #include "qwidget.h"
+#include "qmenu.h"
 using namespace std;
 
 class GraphDrawer : public QWidget{
@@ -56,6 +57,56 @@ protected:
                 }
             }
         }
+    }
+
+    void contextMenuEvent(QContextMenuEvent* event) override{
+        char clicked = '\0';
+        for(int i=0;i<graph.adjList.count;i++){
+            QPoint center = graph.adjList.get(keys[i])->center;
+            if(QPoint(event->pos() - center).manhattanLength() <= 20){
+                clicked = keys[i];
+            }
+        }
+
+        QMenu menu(this);
+
+        QAction* addVertex = menu.addAction("Add Vertex");
+        QAction* removeVertex = nullptr;
+        QAction* removeEdge = nullptr;
+
+        if(clicked != '\0'){
+            removeVertex = menu.addAction("Remove Vertex");
+            removeEdge = menu.addAction("Remove Edge");
+        }
+
+        QAction* selected = menu.exec(event->globalPos());
+        if(selected == nullptr) return;
+        if(selected == addVertex){
+            //TODO: maybe fix the string input thing
+            bool ok;
+            string vertex = QInputDialog::getText(nullptr, "", "Enter Vertex char", QLineEdit::Normal, "", &ok).toStdString();
+            if(ok && !vertex.empty()){
+                graph.addVertex(vertex[0]);
+                init();
+                repaint();
+            }
+        }
+        else if(selected == removeVertex){
+            graph.removeVertex(clicked);
+            init();
+            repaint();
+        }
+        else if(selected == removeEdge){
+            //TODO: maybe fix the string input thing
+            bool ok;
+            string vertex = QInputDialog::getText(nullptr, "", "Enter Edge char", QLineEdit::Normal, "", &ok).toStdString();
+            if(ok && !vertex.empty()){
+                graph.removeEdge(clicked, vertex[0]);
+                init();
+                repaint();
+            }
+        }
+        
     }
 
     void resizeEvent(QResizeEvent* event) override{
@@ -129,26 +180,9 @@ int main(int argc, char **argv){
     QWidget window;
 
     GraphDrawer drawer(graph);
-    QPushButton addVertex("Add Vertex");
-    QPushButton removeVertex("Remove Vertex");
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(&drawer);
-    layout->addWidget(&addVertex);
-    layout->addWidget(&removeVertex);
-
-    QObject::connect(&addVertex, &QPushButton::clicked, [&graph, &drawer](){
-        bool ok;
-        string vertex = QInputDialog::getText(nullptr, "", "Enter Vertex char", QLineEdit::Normal, "", &ok).toStdString();
-        if(ok && !vertex.empty()){
-            graph.addVertex(vertex[0]);
-            drawer.init();
-            drawer.repaint();
-        }
-    });
-    QObject::connect(&removeVertex, &QPushButton::clicked, [](){
-
-    });
 
     window.setLayout(layout);
     window.show();
