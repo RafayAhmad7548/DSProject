@@ -1,6 +1,7 @@
 #include "graph.hpp"
 #include "linklist.hpp"
 #include "minheap.hpp"
+#include "que.hpp"
 
 template<typename  T>
 Graph<T>::Graph(){
@@ -109,4 +110,45 @@ void Graph<T>::dfsActual(T vertex, bool visited[]) {
             current = current->next;
         }
     }
+}
+
+
+
+// BFS Traversal method using the Queue class
+template<typename T>
+void Graph<T>::BFS(T start) 
+{
+    bool *visited= new bool[adjList.count];  // Array to keep track of visited vertices
+    for (int i=0;i<adjList.count;i++) 
+    visited[i]=false;  // Mark all vertices as unvisited initially
+    
+
+    Queue<T> q;  // Create a queue for BFS
+    visited[adjList.hashFunction(start)]=true;  // Mark the starting node as visited
+    q.PUSH(start);  // Enqueue the starting node
+
+    while (q.ISEMPTY()==false) 
+    {
+        T vertex=q.start_element();  
+        cout<<vertex<< " ";
+        q.POP(); 
+
+        // Retrieve the adjacency list node for the current vertex
+        HashNode<T,LinkList<T>> *adjNode=adjList.get(vertex);
+        if (adjNode) 
+        {  // node exists
+            NodeList<T> *curr=adjNode->value.head;
+            while (curr) 
+            {
+                int curr_Ind=adjList.hashFunction(curr->value);
+                if (visited[curr_Ind]==false)
+                {
+                    visited[curr_Ind]=true;  // Mark the neighbor as visited
+                    q.PUSH(curr->value);  // Enqueue the neighbor
+                }
+                curr=curr->next;  
+            }
+        }
+    }
+        delete[] visited;
 }
