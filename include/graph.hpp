@@ -16,6 +16,8 @@ public:
     void removeVertex(T data);
     void removeEdge(T from, T to);
     HashTable<T, int> dijkstra(T source);
+    void dfs(T start);
+    void dfsActual(T vertex, bool visited[]);
 };
 
 template class Graph<char>;

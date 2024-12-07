@@ -76,3 +76,37 @@ HashTable<T, int> Graph<T>::dijkstra(T source) {
     }
     return distances;
 }
+
+
+template<typename T>
+void Graph<T>::dfs(T start) {
+    bool* visited = new bool[adjList.count];
+    for (int i = 0; i < adjList.count; i++) {
+        visited[i] = false;
+    }
+    dfsActual(start, visited);
+    delete[] visited;
+}
+
+template<typename T>
+void Graph<T>::dfsActual(T vertex, bool visited[]) {
+    int index = adjList.hashFunction(vertex);
+    visited[index] = true;
+    cout << vertex << " ";
+
+    // Retrieve the adjacency list node for the current vertex
+    HashNode<T, LinkList<T>>* adjNode = adjList.get(vertex);
+    if (adjNode) { // node exists
+    // Get the head of the linked list containing neighbors
+        NodeList<T>* current = adjNode->value.head;
+        while (current) {
+            // Get the index of the neighboring vertex
+            int currentIndex = adjList.hashFunction(current->value);
+            if (!visited[currentIndex]) {
+                dfsActual(current->value, visited); // recursively perform DFS
+            }
+            // Move to the next neighbor in the list
+            current = current->next;
+        }
+    }
+}
