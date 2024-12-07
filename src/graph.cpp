@@ -1,5 +1,6 @@
 #include "graph.hpp"
 #include "linklist.hpp"
+#include "minheap.hpp"
 
 template<typename  T>
 Graph<T>::Graph(){
@@ -60,8 +61,8 @@ HashTable<T, int> Graph<T>::dijkstra(T source) {
             LinkList<T>& neighbors = adjNode->value;
             NodeList<T>* current = neighbors.head;
             while (current) {
-                 // Neighbor vertex and edge weight
-                T v = current->data;
+                // Neighbor vertex and edge weight
+                T v = current->value;
                 int weight = current->weight;
                 int distV = distances.get(v)->value;
                 // Relaxation step

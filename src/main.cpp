@@ -30,6 +30,7 @@ class GraphDrawer : public QWidget{
     HashTable<char, int>& signalTimes;
     char* keys;
     char* firstPressedKey;
+    int timePassed;
 
      void drawArrow(QPainter& painter, QPointF start, QPointF end, int weight){
         QLineF line(start, end);
@@ -52,9 +53,10 @@ class GraphDrawer : public QWidget{
     }
 
     void Timer(){
-        for(int i=0;i<graph.adjList.count;i++){
-            signalTimes.get(keys[i])->value--;
-        }
+        // for(int i=0;i<graph.adjList.count;i++){
+        //     signalTimes.get(keys[i])->value--;
+        // }
+        timePassed++;
         repaint();
     }
 
@@ -78,8 +80,9 @@ protected:
             painter.drawText(graph.adjList.get(keys[i])->center, QString(keys[i]));
 
             painter.setBrush(Qt::green);
+            int time = signalTimes.get(keys[i])->value - timePassed;
             painter.drawEllipse(center+QPoint(20, -20), 10, 10);
-            painter.drawText(center+QPoint(15, -15), QString::number(signalTimes.get(keys[i])->value));
+            painter.drawText(center+QPoint(15, -15), QString::number(time));
         }
     }
 
@@ -160,6 +163,7 @@ protected:
   public:
     GraphDrawer(Graph<char>& graph, HashTable<char, int>& signalTimes, QWidget* parent=nullptr) : QWidget(parent), graph(graph), signalTimes(signalTimes){
         keys = nullptr;
+        timePassed = 0;
 
         QTimer* timer = new QTimer(this);
         QObject::connect(timer, &QTimer::timeout, this, &GraphDrawer::Timer);

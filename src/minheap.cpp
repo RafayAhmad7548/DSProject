@@ -1,6 +1,5 @@
-#include<iostream>>
+#include<iostream>
 #include "minheap.hpp"
-using namespace std;
 
 void MinheapQue::swap(int &a,int &b) 
 {
@@ -27,7 +26,7 @@ void MinheapQue::heapifyUp(int ind)
         int parent=(ind-1)/2;
 
         if (heap[parent] <= heap[ind])
-        break;
+            break;
 
         swap(heap[parent], heap[ind]);
         ind=parent;
@@ -47,13 +46,13 @@ void MinheapQue::heapifyDown(int ind)
 
         
         if (left<size && heap[left]<heap[small]) 
-        small=left;
+            small=left;
         
         if (right<size && heap[right]<heap[small]) 
-        small=right;
+            small=right;
     
         if (small==ind)
-        break;
+            break;
 
         swap(heap[ind],heap[small]);
         ind=small;
@@ -65,7 +64,7 @@ void MinheapQue::resizeHeap(int new_size)
 {
     int *newHeap=new int[new_size];
     for (int i=0;i<size;i++) 
-    newHeap[i]=heap[i];
+        newHeap[i]=heap[i];
     
     delete[] heap;
     heap=newHeap;
@@ -75,7 +74,7 @@ void MinheapQue::resizeHeap(int new_size)
 void MinheapQue::push(int value) 
 {
     if (size==capacity) 
-    resizeHeap(capacity*2); 
+        resizeHeap(capacity*2); 
     
     heap[size]=value;
     heapifyUp(size);
@@ -85,7 +84,7 @@ void MinheapQue::push(int value)
 void MinheapQue::pop() 
 {
     if (size==0) 
-    return;
+        return;
     
     heap[0]=heap[size-1];
     size--;
@@ -95,7 +94,7 @@ void MinheapQue::pop()
 int MinheapQue::top()  
 {
     if (size==0) 
-    return -1; 
+        return -1; 
     
     return heap[0];
 }
@@ -110,12 +109,12 @@ bool MinheapQue::isEmpty()
 void MinheapQue::display()  
 {
     if (size==0) 
-    return;
+        return;
     
-    cout<<"Min Heap: ";
+    std::cout<<"Min Heap: ";
     
     for (int i=0;i<size;i++) 
-    cout<<heap[i]<<" ";
+        std::cout<<heap[i]<<" ";
     
-    cout<<endl;
+    std::cout<<std::endl;
 }
