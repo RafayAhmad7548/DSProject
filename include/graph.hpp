@@ -14,6 +14,7 @@ public:
     void addEdge(T from, T to, int weight);
     void removeVertex(T data);
     void removeEdge(T from, T to);
+    HashTable<T, int> dijkstra(T source);
 };
 
 template class Graph<char>;
