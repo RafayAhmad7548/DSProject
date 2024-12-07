@@ -33,5 +33,6 @@ public:
 };
 
 template class HashTable<char, LinkList<char>>;
+template class HashTable<char, int>;
 
 #endif // HASHTABLE_HPP

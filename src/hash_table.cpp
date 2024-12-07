@@ -1,3 +1,4 @@
+#include "linklist.hpp"
 #include <hash_table.hpp>
 
 template<typename K, typename V>
@@ -38,6 +39,7 @@ void HashTable<K, V>::resize(){
 
 template<typename K, typename V>
 void HashTable<K, V>::insert(K key, V value) {
+    if(count == tablesize-1) resize();
     int hash = hashFunction(key);
     while (table[hash] != nullptr) {
         resize();
@@ -57,6 +59,14 @@ HashNode<K, V>*& HashTable<K, V>::get(K key) {
 template<typename K, typename V>
 void HashTable<K, V>::remove(K key) {
     HashNode<K, V>*& temp = get(key);
+    delete temp;
+    temp = nullptr;
+    count--;
+}
+
+template<>
+void HashTable<char, LinkList<char>>::remove(char key){
+    HashNode<char, LinkList<char>>*& temp = get(key);
     delete temp;
     temp = nullptr;
     count--;

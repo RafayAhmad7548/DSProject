@@ -1,6 +1,10 @@
 #include <climits>
+#include <cstdio>
+#include <fstream>
+#include <string>
 
 #include "graph.hpp"
+#include "hash_table.hpp"
 #include "linklist.hpp"
 #include "qaction.h"
 #include "qapplication.h"
@@ -10,7 +14,10 @@
 #include "qinputdialog.h"
 #include "qlineedit.h"
 #include "qlogging.h"
+#include "qnamespace.h"
 #include "qobject.h"
+#include "qobjectdefs.h"
+#include "qtimer.h"
 #include "qpainter.h"
 #include "qpoint.h"
 #include "qpushbutton.h"
@@ -20,8 +27,39 @@ using namespace std;
 
 class GraphDrawer : public QWidget{
     Graph<char>& graph;
-    char* keys = nullptr;
+    HashTable<char, int>& signalTimes;
+    char* keys;
     char* firstPressedKey;
+    int timePassed;
+
+     void drawArrow(QPainter& painter, QPointF start, QPointF end, int weight){
+        QLineF line(start, end);
+        QPointF mid(line.pointAt(0.5));
+        painter.drawLine(line);
+
+        double angle = std::atan2(line.dy(), -line.dx());
+        double arrowSize = 10;
+
+        QPointF arrowP1 = mid + QPointF(sin(angle + M_PI / 3) * arrowSize, cos(angle + M_PI / 3) * arrowSize);
+        QPointF arrowP2 = mid + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize, cos(angle + M_PI - M_PI / 3) * arrowSize);
+
+        painter.setBrush(Qt::black);
+        QPolygonF arrowHead;
+        arrowHead << mid << arrowP1 << arrowP2;
+        painter.drawPolygon(arrowHead);
+
+        QPointF textPos = mid + QPointF(10 * cos(angle), 10 * sin(angle));
+        painter.drawText(textPos, QString::number(weight));
+    }
+
+    void Timer(){
+        // for(int i=0;i<graph.adjList.count;i++){
+        //     signalTimes.get(keys[i])->value--;
+        // }
+        timePassed++;
+        repaint();
+    }
+
 protected:
     void paintEvent(QPaintEvent* event) override{
         QPainter painter(this);
@@ -35,25 +73,33 @@ protected:
             }
         }
 
-        painter.setBrush(Qt::transparent);
         for(int i=0;i<graph.adjList.count;i++){
-            painter.drawEllipse(graph.adjList.get(keys[i])->center, 20, 20);
+            painter.setBrush(Qt::gray);
+            QPoint center = graph.adjList.get(keys[i])->center;
+            painter.drawEllipse(center, 20, 20);
             painter.drawText(graph.adjList.get(keys[i])->center, QString(keys[i]));
+
+            painter.setBrush(Qt::green);
+            int time = signalTimes.get(keys[i])->value - timePassed;
+            painter.drawEllipse(center+QPoint(20, -20), 10, 10);
+            painter.drawText(center+QPoint(15, -15), QString::number(time));
         }
     }
 
     void mousePressEvent(QMouseEvent* event) override{
-        for(int i=0;i<graph.adjList.count;i++){
-            QPoint center = graph.adjList.get(keys[i])->center;
-            if(QPoint(event->pos() - center).manhattanLength() <= 20){
-                qDebug()<<keys[i];
-                if(firstPressedKey == nullptr) firstPressedKey = &keys[i];
-                else{
-                    bool ok;
-                    int weight = QInputDialog::getInt(nullptr, "", "Enter weight for edge", 0, INT_MIN, INT_MAX, 1, &ok);
-                    if(ok) graph.addEdge(*firstPressedKey, keys[i], weight);
-                    firstPressedKey = nullptr;
-                    repaint();
+        if(event->button() == Qt::LeftButton){
+            for(int i=0;i<graph.adjList.count;i++){
+                QPoint center = graph.adjList.get(keys[i])->center;
+                if(QPoint(event->pos() - center).manhattanLength() <= 20){
+                    qDebug()<<keys[i];
+                    if(firstPressedKey == nullptr) firstPressedKey = &keys[i];
+                    else{
+                        bool ok;
+                        int weight = QInputDialog::getInt(nullptr, "", "Enter weight for edge", 0, INT_MIN, INT_MAX, 1, &ok);
+                        if(ok) graph.addEdge(*firstPressedKey, keys[i], weight);
+                        firstPressedKey = nullptr;
+                        repaint();
+                    }
                 }
             }
         }
@@ -114,28 +160,14 @@ protected:
         QWidget::resizeEvent(event);
     }
 
-    void drawArrow(QPainter& painter, QPointF start, QPointF end, int weight){
-        QLineF line(start, end);
-        QPointF mid(line.pointAt(0.5));
-        painter.drawLine(line);
-
-        double angle = std::atan2(line.dy(), -line.dx());
-        double arrowSize = 10;
-
-        QPointF arrowP1 = mid + QPointF(sin(angle + M_PI / 3) * arrowSize, cos(angle + M_PI / 3) * arrowSize);
-        QPointF arrowP2 = mid + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize, cos(angle + M_PI - M_PI / 3) * arrowSize);
-
-        painter.setBrush(Qt::black);
-        QPolygonF arrowHead;
-        arrowHead << mid << arrowP1 << arrowP2;
-        painter.drawPolygon(arrowHead);
-
-        QPointF textPos = mid + QPointF(10 * cos(angle), 10 * sin(angle));
-        painter.drawText(textPos, QString::number(weight));
-    }
-
   public:
-    GraphDrawer(Graph<char>& graph, QWidget* parent=nullptr) : QWidget(parent), graph(graph){
+    GraphDrawer(Graph<char>& graph, HashTable<char, int>& signalTimes, QWidget* parent=nullptr) : QWidget(parent), graph(graph), signalTimes(signalTimes){
+        keys = nullptr;
+        timePassed = 0;
+
+        QTimer* timer = new QTimer(this);
+        QObject::connect(timer, &QTimer::timeout, this, &GraphDrawer::Timer);
+        timer->start(1000);
         init();
     }
     ~GraphDrawer(){
@@ -146,7 +178,7 @@ protected:
         delete[] keys;
         keys = graph.adjList.getKeySet();
         firstPressedKey = nullptr;
-        int radius = 200;
+        int radius = 400;
         int centerX = width()/2;
         int centerY = height()/2;
 
@@ -162,24 +194,29 @@ protected:
 int main(int argc, char **argv){
 
     Graph<char> graph;
-    graph.addVertex('A');
-    graph.addVertex('B');
-    graph.addVertex('C');
-    graph.addVertex('D');
-    graph.addVertex('E');
+    for(int i=0;i<26;i++) graph.addVertex('A'+i);
 
-    graph.addEdge('A', 'B', 5);
-    graph.addEdge('B', 'C', 10);
-    graph.addEdge('A', 'C', 15);
-    graph.addEdge('C', 'D', 7);
-    graph.addEdge('D', 'E', 3);
-    graph.addEdge('B', 'D', 9);
+    ifstream roadNetwork("road_network.csv");
+    string line;
+    getline(roadNetwork, line);
+    while(getline(roadNetwork, line)){
+        graph.addEdge(line[0], line[2], stoi(line.substr(4, line.length())));
+    }
+    roadNetwork.close();
+
+    HashTable<char, int> signalTimes;
+    ifstream traffic("traffic_signals.csv");
+    getline(traffic, line);
+    while(getline(traffic, line)){
+        signalTimes.insert(line[0], stoi(line.substr(2, line.length())));
+    }
+    traffic.close();
     
 
     QApplication app(argc, argv);
     QWidget window;
 
-    GraphDrawer drawer(graph);
+    GraphDrawer drawer(graph, signalTimes);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(&drawer);
