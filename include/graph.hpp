@@ -3,6 +3,7 @@
 
 #include "linklist.hpp"
 #include "hash_table.hpp"
+#include"minheap.hpp"
 
 template<typename  T>
 class Graph{
