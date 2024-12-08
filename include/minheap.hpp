@@ -2,15 +2,16 @@
 #define MIN_HEAP_HPP
 
 #include <iostream>
+template<typename  T>
 class MinheapQue 
 {
     private:
-    int *heap;      
+    T* heap;      
     int size;      
     int capacity;   
 
-    void swap(int &a,int &b){
-        int temp=a;
+    void swap(T& a, T& b){
+        T temp=a;
         a=b;
         b=temp;
     }
@@ -69,7 +70,7 @@ class MinheapQue
     ~MinheapQue(){
         delete[] heap;
     }
-    void push(int value){
+    void push(T value){
         if (size==capacity) 
             resizeHeap(capacity*2); 
         
@@ -85,7 +86,7 @@ class MinheapQue
         size--;
         heapifyDown(0);
     }
-    int top(){
+    T top(){
         if (size==0) 
             return -1; 
         

@@ -44,6 +44,11 @@ class LinkList
         size++;
     }
 
+    void insertAtBeginning(T v, int weight) {
+    NodeList<T>* newnode = new NodeList<T>(v, weight);
+    newnode->next = head;
+    head = newnode;
+}
     void deletevalue(T val){
         NodeList<T> *curr=head;
         NodeList<T> *prev=nullptr;

@@ -47,47 +47,76 @@ public:
         adjList.get(from)->value.deletevalue(Edge<T>(to));
     }
 
-    HashTable<T, int> dijkstra(T source){
-        // Initialize distances hash table
-        HashTable<T, int> distances;
-        T* keys = adjList.getKeySet();
-        for (int i = 0; i < adjList.count; ++i) {
-            distances.insert(keys[i], std::numeric_limits<int>::max()); // initialize all distances to infinity
+    LinkList<T> dijkstra(T source, T destination) {
+    // Initialize distances hash table
+    HashTable<T, int> distances;
+    // Hash table to store predecessors
+    HashTable<T, T> predecessors;
+
+    T* keys = adjList.getKeySet();
+    for (int i = 0; i < adjList.count; ++i) {
+        distances.insert(keys[i], std::numeric_limits<int>::max()); // Initialize all distances to infinity
+    }
+    distances.get(source)->value = 0; // Distance to source vertex is 0
+
+    // Min heap for priority queue
+    MinheapQue<T> pq;
+    pq.push(source);
+
+    while (!pq.isEmpty()) {
+        T u = pq.top();
+        pq.pop();
+
+        int distU = distances.get(u)->value; // idher distance store karwa 'u' ka kisi tarha
+
+        if (u == destination) {
+            break; // Shortest path to destination found
         }
-        distances.get(source)->value = 0; // distance to source vertex = 0
 
-        // Min heap for priority queue
-        MinheapQue pq;
-        pq.push(source);
-
-        while (!pq.isEmpty()) {
-            T u = pq.top();
-            pq.pop();
-
-            int distU = distances.get(u)->value;
-
-            // Get neighbors of u
-            auto adjNode = adjList.get(u); // get adjecency list of curr node
-            if (adjNode) {
-                LinkList<Edge<T>>& neighbors = adjNode->value;
-                NodeList<Edge<T>>* current = neighbors.head;
-                while (current) {
-                    // Neighbor vertex and edge weight
-                    T v = current->value.to;
-                    int weight = current->value.weight;
-                    int distV = distances.get(v)->value;
-                    // Relaxation step
-                    if (distU + weight < distV) {
-                        distances.get(v)->value = distU + weight;
-                        pq.push(v);
-                    }
-                    current = current->next;
+        // Get neighbors of u
+        HashNode<T, LinkList<T>>* adjNode = adjList.get(u);
+        if (adjNode) {
+            NodeList<T>* current = adjNode->value.head;
+            while (current) {
+                // Neighbor vertex and edge weight
+                T v = current->value;
+                int weight = current->weight;
+                int distV = distances.get(v)->value; // idher distance store karwa 'u' ka kisi tarha
+                // Relaxation step
+                if (distU + weight < distV) {
+                    distances.get(v)->value = distU + weight;
+                    predecessors.insert(v, u);
+                    pq.push(v);
                 }
+                current = current->next;
             }
         }
-        return distances;
-
     }
+
+    // Reconstruct the shortest path using the predecessors hash table
+    LinkList<T> path;
+    T current = destination;
+    HashNode<T, T>* predNode = predecessors.get(current);
+
+    if (predNode == nullptr && source != destination) {
+        // No path exists
+        return path; // Return empty path
+    }
+
+    while (current != source) {
+        path.insertAtBeginning(current); // Insert at the beginning
+        predNode = predecessors.get(current);
+        if (predNode == nullptr) {
+            // No path exists
+            path.head = nullptr; // Clear the path
+            return path;
+        }
+        current = predNode->value;
+    }
+    path.insert(source); // Insert the source at the beginning
+
+    return path;
+}
     void dfs(T start){
         bool* visited = new bool[adjList.count];
         for (int i = 0; i < adjList.count; i++) {
