@@ -18,13 +18,13 @@ class HashTable {
     int tablesize;
     HashNode<K, V>** table;
     
-    int hashFunction(K key);
     void resize();
 public:
     int count;
     HashTable();
     ~HashTable();
     
+    int hashFunction(K key);
     void insert(K key, V val);
     HashNode<K, V>*& get(K key);
     void remove(K key);

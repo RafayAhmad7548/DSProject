@@ -4,15 +4,15 @@ template <typename T>
 Node<T>::Node(T val) 
 {
     data=val;
-    next=NULL;
+    next=nullptr;
 };
 
 
 template <typename T>
 Queue<T>::Queue()
 {
-    frony=NULL;
-    rear=NULL;
+    front=nullptr;
+    rear=nullptr;
 } 
 
 
@@ -26,7 +26,7 @@ template <typename T>
 void Queue<T>::PUSH(const T &data) 
 {
     Node<T> *newNode=new Node<T>(data);  
-    if (rear==NULL) 
+    if (rear==nullptr) 
     front=rear=newNode;      
     else 
     {
@@ -38,12 +38,12 @@ void Queue<T>::PUSH(const T &data)
 template <typename T>
 void Queue<T>::POP()
 {
-    if (front!=NULL) 
+    if (front!=nullptr) 
     {
         Node<T> *temp=front;
         front=front->next;  
-        if (front==NULL) 
-        rear=NULL;   
+        if (front==nullptr) 
+            rear=nullptr;   
         
         delete temp;                
     }
@@ -52,23 +52,22 @@ void Queue<T>::POP()
 template <typename T>
 T Queue<T>::start_element() 
 {
-    if (front!=NULL) 
-    return front->data;    
+    return front->data;
 }
 
 template <typename T>
 bool Queue<T>::ISEMPTY()  
 {
-    return front==NULL;
+    return front==nullptr;
 }
 
 template <typename T>
 void Queue<T>::clear() 
 {
     while (ISEMPTY()==false) 
-    POP();
+        POP();
 }
 
 template class Queue<int>;
 template class Queue<float>;
-template class Queue<std::string>;
+template class Queue<char>;

@@ -63,7 +63,7 @@ HashTable<T, int> Graph<T>::dijkstra(T source) {
             NodeList<T>* current = neighbors.head;
             while (current) {
                  // Neighbor vertex and edge weight
-                T v = current->data;
+                T v = current->value;
                 int weight = current->weight;
                 int distV = distances.get(v)->value;
                 // Relaxation step
@@ -93,7 +93,7 @@ template<typename T>
 void Graph<T>::dfsActual(T vertex, bool visited[]) {
     int index = adjList.hashFunction(vertex);
     visited[index] = true;
-    cout << vertex << " ";
+    // cout << vertex << " ";
 
     // Retrieve the adjacency list node for the current vertex
     HashNode<T, LinkList<T>>* adjNode = adjList.get(vertex);
@@ -120,7 +120,7 @@ void Graph<T>::BFS(T start)
 {
     bool *visited= new bool[adjList.count];  // Array to keep track of visited vertices
     for (int i=0;i<adjList.count;i++) 
-    visited[i]=false;  // Mark all vertices as unvisited initially
+        visited[i]=false;  // Mark all vertices as unvisited initially
     
 
     Queue<T> q;  // Create a queue for BFS
@@ -130,7 +130,7 @@ void Graph<T>::BFS(T start)
     while (q.ISEMPTY()==false) 
     {
         T vertex=q.start_element();  
-        cout<<vertex<< " ";
+        // cout<<vertex<< " ";
         q.POP(); 
 
         // Retrieve the adjacency list node for the current vertex

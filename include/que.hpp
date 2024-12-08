@@ -1,8 +1,6 @@
 #ifndef QUE_HPP
 #define QUE_HPP
 
-#include<iostream>
-
 template<typename T>
 class Node 
 {
