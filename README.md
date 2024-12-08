@@ -8,6 +8,8 @@ where they can add/remove cities, add/remove roads, block roads, and simulate ve
 The program reads input data from CSV files and represents the road network dynamically based on that data, 
 with real-time updates to reflect changes made during interaction.
 
+![Road Network Screenshot](screenshot.png)
+
 ## Features
 
 - **Graph Representation**:
