@@ -47,7 +47,7 @@ public:
         adjList.get(from)->value.deletevalue(Edge<T>(to));
     }
 
-    LinkList<T> dijkstra(T source, T destination) {
+    std::string dijkstra(T source, T destination) {
     // Initialize distances hash table
     HashTable<T, int> distances;
     // Hash table to store predecessors
@@ -76,12 +76,12 @@ public:
         // Get neighbors of u
         HashNode<T, LinkList<T>>* adjNode = adjList.get(u);
         if (adjNode) {
-            NodeList<T>* current = adjNode->value.head;
+            NodeList<Edge<T>>* current = adjNode->value.head;
             while (current) {
                 // Neighbor vertex and edge weight
-                T v = current->value;
-                int weight = current->weight;
-                int distV = distances.get(v)->value; // idher distance store karwa 'u' ka kisi tarha
+                T v = current->value.vertex;
+                int weight = current->value.weight;
+                int distV = distances.get(v)->value;
                 // Relaxation step
                 if (distU + weight < distV) {
                     distances.get(v)->value = distU + weight;
@@ -96,24 +96,20 @@ public:
     // Reconstruct the shortest path using the predecessors hash table
     LinkList<T> path;
     T current = destination;
-    HashNode<T, T>* predNode = predecessors.get(current);
 
-    if (predNode == nullptr && source != destination) {
-        // No path exists
-        return path; // Return empty path
+    if (distances.get(current)->value == std::numeric_limits<int>::max()) {
+        return ""; 
     }
 
     while (current != source) {
-        path.insertAtBeginning(current); // Insert at the beginning
-        predNode = predecessors.get(current);
-        if (predNode == nullptr) {
-            // No path exists
-            path.head = nullptr; // Clear the path
-            return path;
+        path.insertAtBeginning(current); // Insert at the beginning to reverse the path
+        HashNode<T, T>* predNode = predecessors.get(current);
+        if (predNode == nullptr) {// No path exists
+            return ""; 
         }
         current = predNode->value;
     }
-    path.insert(source); // Insert the source at the beginning
+    path.insertAtBeginning(source); // Insert the source at the beginning
 
     // return path;
     std::string shortestpath = "";

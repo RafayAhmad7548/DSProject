@@ -48,7 +48,8 @@ class LinkList
     NodeList<T>* newnode = new NodeList<T>(v, weight);
     newnode->next = head;
     head = newnode;
-}
+    size++;
+    }
     void deletevalue(T val){
         NodeList<T> *curr=head;
         NodeList<T> *prev=nullptr;
