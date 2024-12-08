@@ -115,7 +115,14 @@ public:
     }
     path.insert(source); // Insert the source at the beginning
 
-    return path;
+    // return path;
+    std::string shortestpath = "";
+    NodeList<T>* temp = path.head;
+    while (temp != nullptr) {
+        shortestpath += temp->value;
+        temp = temp->next;
+    }
+    return shortestpath;
 }
     void dfs(T start){
         bool* visited = new bool[adjList.count];
