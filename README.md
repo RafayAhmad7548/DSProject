@@ -47,7 +47,8 @@ sudo apt install qt6-qmake qt6-base-dev
 ## To run 
 1) make
 2) ./project
-graph.hpp
+
+### graph.hpp
 
 Contains the Graph class, which represents the road network. It allows adding/removing vertices (cities) and edges (roads). Key functions include:
 
@@ -58,14 +59,14 @@ Contains the Graph class, which represents the road network. It allows adding/re
   
   removeEdge(): Removes a road between two cities.
 
-hash_table.hpp
+### hash_table.hpp
 
 This file implements a simple hash table used to store various graph-related data, such as:
 
   1) Adjacency lists for each vertex (city).
   2) Properties such as blocked roads.
 
-linklist.hpp
+### linklist.hpp
 
 Implements a LinkList and NodeList class for handling dynamic lists of edges and vertices. These are used to manage the graph's adjacency list and other collections of data.
 vehicle.hpp
@@ -74,7 +75,7 @@ Defines the Vehicle class, which represents a vehicle traveling across the netwo
 
    1) The Vehicle class has properties such as id, from, to, and uses QPropertyAnimation for animating the movement between cities.
 
-main.cpp
+### main.cpp
 
 The entry point of the application:
 
@@ -82,7 +83,7 @@ The entry point of the application:
    2) Sets up the Qt application and the main window.
    3) Initializes the GraphDrawer widget for rendering the graph and animating vehicle movement.
 
-graphdrawer.cpp
+### graphdrawer.cpp
 
 Handles the rendering of the graph on the screen:
 
@@ -90,27 +91,27 @@ Handles the rendering of the graph on the screen:
   2) Responds to user input such as mouse clicks and right-clicks.
   3) Manages the visual animations for vehicle movement.
     
-1. Min Heap
+#### 1. Min Heap
 A Min Heap is a specialized binary tree where each parent node's value is smaller than or equal to its children's values. 
 The smallest element is always at the root of the heap. In this code, the Min Heap is used in Dijkstra's Algorithm to efficiently 
 manage and retrieve the node with the smallest distance. This allows the algorithm to continually process the node with the shortest 
 known distance, updating distances to neighboring nodes. The use of a Min Heap ensures that the algorithm runs efficiently, even on 
 large graphs, by quickly finding the node that should be processed next based on its minimal distance.
 
-2. Dijkstra's Algorithm
+#### 2. Dijkstra's Algorithm
 Dijkstra's Algorithm is a greedy algorithm designed to find the shortest path from a source node to a destination node in a weighted graph.
 The algorithm starts by initializing all distances to infinity, except for the source node, which is set to zero.
 As it progresses, the algorithm selects the node with the smallest distance (using the Min Heap), updates the distances to its neighbors,
 and processes those nodes. This continues until the destination node is reached or all nodes have been processed.
 Dijkstra's algorithm is essential for determining the optimal path in scenarios where the weights represent distances or travel times.
 
-3. BFS (Breadth-First Search)
+#### 3. BFS (Breadth-First Search)
 BFS is a graph traversal algorithm that explores nodes level by level, starting from the source node. It uses a queue to keep track of nodes to visit,
 ensuring that all neighbors of the current node are visited before moving on to the next level. BFS is particularly useful for finding the shortest path
 in unweighted graphs, as it explores all paths of the same length before moving to longer ones. This ensures that when a node is first visited, it is reached
 by the shortest possible path from the source. BFS is often used in network analysis and pathfinding tasks.
 
-5. DFS (Depth-First Search)
+#### 4. DFS (Depth-First Search)
 DFS is a graph traversal algorithm that explores as far as possible down each branch before backtracking. It uses recursion or a stack to visit a node's neighbors
 before exploring their neighbors,continuing until it reaches a dead end (a node with no unvisited neighbors). Once all neighbors of a node are visited,
 DFS backtracks to explore other unvisited paths.DFS is valuable for tasks that require exploring all possible paths, like searching for specific patterns or
