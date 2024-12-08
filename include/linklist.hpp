@@ -18,6 +18,8 @@ class LinkList
 {
     public:
     NodeList<T> *head;
+    int size;
+
     LinkList(){
         head=nullptr;
     } 
@@ -39,6 +41,7 @@ class LinkList
 
             temp->next=newnode;
         }
+        size++;
     }
 
     void deletevalue(T val){
@@ -62,7 +65,8 @@ class LinkList
         else
             prev->next=curr->next; 
         
-        delete curr; 
+        delete curr;
+        size--;
     }
 
     bool contains(T val){

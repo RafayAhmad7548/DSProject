@@ -11,9 +11,10 @@ class Edge{
 public:
     T to;
     int weight;
-    Edge(T to, int weight=0) : to(to), weight(weight){}
-    bool operator==(Edge<T>& other){
-        return to == other.to && weight == other.weight;
+    bool blocked;
+    Edge(T to, int weight=0, bool blocked=false) : to(to), weight(weight), blocked(blocked){}
+    bool operator==(const Edge<T>& other) const{
+        return to == other.to && weight == other.weight && blocked == other.blocked;
     }
 };
 
