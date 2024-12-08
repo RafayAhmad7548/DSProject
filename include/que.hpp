@@ -8,7 +8,10 @@ class Node
     T data;
     Node *next;
 
-    Node(T val);
+    Node(T val){
+        data=val;
+        next=nullptr;
+    }
 };
 
 template <typename T>
@@ -19,14 +22,45 @@ class Queue
     Node<T> *rear;   
 
     public:
-    Queue();               
-    ~Queue();             
+    Queue(){
+        front=nullptr;
+        rear=nullptr;
+    }
+    ~Queue(){
+        clear();
+    }
 
-    void PUSH(const T &data);   
-    void POP();                  
-    T start_element() ;      
-    bool ISEMPTY() ;        
-    void clear();                
+    void PUSH(const T &data){
+        Node<T> *newNode=new Node<T>(data);  
+        if (rear==nullptr) 
+        front=rear=newNode;      
+        else 
+        {
+            rear->next=newNode;         
+            rear=newNode;               
+        }
+    }
+    void POP(){
+        if (front!=nullptr) 
+        {
+            Node<T> *temp=front;
+            front=front->next;  
+            if (front==nullptr) 
+                rear=nullptr;   
+            
+            delete temp;                
+        }
+    }
+    T start_element(){
+        return front->data;
+    }
+    bool ISEMPTY(){
+        return front==nullptr;
+    }
+    void clear(){
+        while (ISEMPTY()==false) 
+            POP();
+    }
 };
 
 #endif //QUE_HPP

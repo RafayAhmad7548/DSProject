@@ -1,15 +1,16 @@
 #ifndef LINKLIST_HPP
 #define LINKLIST_HPP
 
+#include <iostream>
+
 template<typename T>
 class NodeList
 {
     public:
-    NodeList *next;
     T value;
-    int weight;
+    NodeList *next;
     
-    NodeList(T va, int weight=0);  
+    NodeList(T va) : value(va), next(nullptr){}
 };
 
 template<typename T>
@@ -17,15 +18,80 @@ class LinkList
 {
     public:
     NodeList<T> *head;
-    LinkList(); 
-    void insert(T v, int weight=0);
-    void deletevalue(T val);
-    bool contains(T val);
-    void display(); 
+    LinkList(){
+        head=nullptr;
+    } 
+
+    void insert(T v){
+        NodeList<T> *newnode=new NodeList<T>(v);
+    
+        if (head==nullptr) 
+        {
+            head=newnode;
+            return;
+        }
+        else
+        {
+            NodeList<T> *temp=head;
+        
+            while (temp->next!=nullptr)
+                temp=temp->next;
+
+            temp->next=newnode;
+        }
+    }
+
+    void deletevalue(T val){
+        NodeList<T> *curr=head;
+        NodeList<T> *prev=nullptr;
+        
+        if (curr==nullptr)
+            return;
+        
+        while (curr!=nullptr && curr->value!=val)
+        {
+            prev=curr;
+            curr=curr->next;
+        }
+
+        if (curr==nullptr)
+            return;
+        
+        if (curr==head)
+            head=head->next; 
+        else
+            prev->next=curr->next; 
+        
+        delete curr; 
+    }
+
+    bool contains(T val){
+        NodeList<T> *temp=head;
+        while(temp != nullptr){
+            if(temp->value == val) return true;
+            temp = temp->next;
+        }
+        return false;
+    }
+
+    void display(){
+        NodeList<T> *temp=head;
+        
+        if (temp==nullptr)
+            return;
+        
+        while (temp!=nullptr)
+        {
+            std::cout<<temp->value;
+            if (temp->next!=nullptr) 
+                std::cout<<" , "; 
+
+            temp=temp->next;
+        }
+        std::cout<<std::endl;
+
+    }
 };
 
-template class LinkList<int>;
-template class LinkList<double>;
-template class LinkList<char>;
 
-#endif // LINKLLIST_HPP
+#endif // LINKLIST_HPP

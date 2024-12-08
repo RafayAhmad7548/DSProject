@@ -65,10 +65,10 @@ protected:
         QPainter painter(this);
 
         for(int i=0;i<graph.adjList.count;i++){
-            LinkList<char> edges = graph.adjList.get(keys[i])->value;
-            NodeList<char>* temp = edges.head;
+            LinkList<Edge<char>> edges = graph.adjList.get(keys[i])->value;
+            NodeList<Edge<char>>* temp = edges.head;
             while(temp != nullptr){
-                drawArrow(painter, graph.adjList.get(keys[i])->center, graph.adjList.get(temp->value)->center, temp->weight);
+                drawArrow(painter, graph.adjList.get(keys[i])->center, graph.adjList.get(temp->value.to)->center, temp->value.weight);
                 temp = temp->next;
             }
         }
