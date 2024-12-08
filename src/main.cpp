@@ -3,7 +3,6 @@
 
 #include "linklist.hpp"
 #include "qapplication.h"
-#include "qboxlayout.h"
 #include "graph.hpp"
 #include "graphdrawer.cpp"
 #include "vehicle.hpp"
@@ -12,6 +11,8 @@ using namespace std;
 
 int main(int argc, char **argv){
     QApplication app(argc, argv);
+    QWidget window;
+    window.setFixedSize(1000, 1000);
 
     Graph<char> graph;
     for(int i=0;i<26;i++) graph.addVertex('A'+i);
@@ -24,13 +25,13 @@ int main(int argc, char **argv){
     }
     roadNetwork.close();
 
-    // HashTable<char, int> signalTimes;
-    // ifstream traffic("traffic_signals.csv");
-    // getline(traffic, line);
-    // while(getline(traffic, line)){
-    //     signalTimes.insert(line[0], stoi(line.substr(2, line.length())));
-    // }
-    // traffic.close();
+    ifstream traffic("traffic_signals.csv");
+    getline(traffic, line);
+    while(getline(traffic, line)){
+        graph.adjList.get(line[0])->signalTime = stoi(line.substr(2, line.length()));
+        graph.adjList.get(line[0])->curSignalTime = stoi(line.substr(2, line.length()));
+    }
+    traffic.close();
 
     ifstream blocks("road_closures.csv");
     getline(blocks, line);
@@ -48,24 +49,20 @@ int main(int argc, char **argv){
     }
     blocks.close();
 
-    LinkList<Vehicle*> vehicles;
-    ifstream vehicleFile("vehicles.csv");
-    getline(vehicleFile, line);
-    while(getline(vehicleFile, line)){
-        vehicles.insert(new Vehicle(graph, stoi(line.substr(1, line.find_first_of(','))), line[line.length()-3], line[line.length()-1]));
-    }
-    
+    // LinkList<Vehicle*> vehicles;
+    // ifstream vehicleFile("vehicles.csv");
+    // getline(vehicleFile, line);
+    // while(getline(vehicleFile, line)){
+    //     Vehicle* vehicle = new Vehicle(graph, stoi(line.substr(1, line.find_first_of(','))), line[line.length()-3], line[line.length()-1], &window);
+    //     vehicles.insert(vehicle);
+    // }
 
-    QWidget window;
+    GraphDrawer drawer(graph, &window);
+    drawer.setGeometry(0, 0, 1000, 1000);
 
-    GraphDrawer drawer(graph, vehicles);
+    Vehicle vehicle(graph, 1, 'A', 'B', &window);
+    vehicle.setGeometry(0, 0, 20, 20);
 
-    QVBoxLayout* layout = new QVBoxLayout;
-    layout->addWidget(&drawer);
-
-
-
-    window.setLayout(layout);
     window.show();
 
     return app.exec();

@@ -44,8 +44,8 @@ class LinkList
         size++;
     }
 
-    void insertAtBeginning(T v, int weight) {
-    NodeList<T>* newnode = new NodeList<T>(v, weight);
+    void insertAtBeginning(T v) {
+    NodeList<T>* newnode = new NodeList<T>(v);
     newnode->next = head;
     head = newnode;
     size++;

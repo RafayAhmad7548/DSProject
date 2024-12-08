@@ -10,7 +10,10 @@ public:
     K key;
     V value;
     QPoint center;
-    HashNode(K key, V value) : key(key), value(value){}
+    int signalTime;
+    int curSignalTime;
+    bool signalState;
+    HashNode(K key, V value) : key(key), value(value), signalState(true){}
 };
 
 template <typename K, typename V>

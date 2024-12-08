@@ -52,7 +52,7 @@ class MinheapQue
         }
     }
     void resizeHeap(int new_size){
-        int *newHeap=new int[new_size];
+        T *newHeap=new T[new_size];
         for (int i=0;i<size;i++) 
             newHeap[i]=heap[i];
         
@@ -65,7 +65,7 @@ class MinheapQue
     MinheapQue(int start_size=10){
         capacity=start_size;
         size=0;
-        heap=new int[capacity];
+        heap=new T[capacity];
     }
     ~MinheapQue(){
         delete[] heap;

@@ -14,7 +14,7 @@ public:
     bool blocked;
     Edge(T to, int weight=0, bool blocked=false) : to(to), weight(weight), blocked(blocked){}
     bool operator==(const Edge<T>& other) const{
-        return to == other.to && weight == other.weight && blocked == other.blocked;
+        return to == other.to;
     }
 };
 
@@ -48,78 +48,79 @@ public:
     }
 
     std::string dijkstra(T source, T destination) {
-    // Initialize distances hash table
-    HashTable<T, int> distances;
-    // Hash table to store predecessors
-    HashTable<T, T> predecessors;
+        // Initialize distances hash table
+        HashTable<T, int> distances;
+        // Hash table to store predecessors
+        HashTable<T, T> predecessors;
 
-    T* keys = adjList.getKeySet();
-    for (int i = 0; i < adjList.count; ++i) {
-        distances.insert(keys[i], std::numeric_limits<int>::max()); // Initialize all distances to infinity
-    }
-    distances.get(source)->value = 0; // Distance to source vertex is 0
-
-    // Min heap for priority queue
-    MinheapQue<T> pq;
-    pq.push(source);
-
-    while (!pq.isEmpty()) {
-        T u = pq.top();
-        pq.pop();
-
-        int distU = distances.get(u)->value; // idher distance store karwa 'u' ka kisi tarha
-
-        if (u == destination) {
-            break; // Shortest path to destination found
+        T* keys = adjList.getKeySet();
+        for (int i = 0; i < adjList.count; ++i) {
+            distances.insert(keys[i], std::numeric_limits<int>::max()); // Initialize all distances to infinity
         }
+        distances.get(source)->value = 0; // Distance to source vertex is 0
 
-        // Get neighbors of u
-        HashNode<T, LinkList<T>>* adjNode = adjList.get(u);
-        if (adjNode) {
-            NodeList<Edge<T>>* current = adjNode->value.head;
-            while (current) {
-                // Neighbor vertex and edge weight
-                T v = current->value.vertex;
-                int weight = current->value.weight;
-                int distV = distances.get(v)->value;
-                // Relaxation step
-                if (distU + weight < distV) {
-                    distances.get(v)->value = distU + weight;
-                    predecessors.insert(v, u);
-                    pq.push(v);
+        // Min heap for priority queue
+        MinheapQue<T> pq;
+        pq.push(source);
+
+        while (!pq.isEmpty()) {
+            T u = pq.top();
+            pq.pop();
+
+            int distU = distances.get(u)->value; // idher distance store karwa 'u' ka kisi tarha
+
+            if (u == destination) {
+                break; // Shortest path to destination found
+            }
+
+            // Get neighbors of u
+            HashNode<T, LinkList<Edge<T>>>* adjNode = adjList.get(u);
+            if (adjNode) {
+                NodeList<Edge<T>>* current = adjNode->value.head;
+                while (current) {
+                    // Neighbor vertex and edge weight
+                    T v = current->value.to;
+                    int weight = current->value.weight;
+                    int distV = distances.get(v)->value;
+                    // Relaxation step
+                    if (distU + weight < distV) {
+                        distances.get(v)->value = distU + weight;
+                        predecessors.insert(v, u);
+                        pq.push(v);
+                    }
+                    current = current->next;
                 }
-                current = current->next;
             }
         }
-    }
 
-    // Reconstruct the shortest path using the predecessors hash table
-    LinkList<T> path;
-    T current = destination;
+        // Reconstruct the shortest path using the predecessors hash table
+        LinkList<T> path;
+        T current = destination;
 
-    if (distances.get(current)->value == std::numeric_limits<int>::max()) {
-        return ""; 
-    }
-
-    while (current != source) {
-        path.insertAtBeginning(current); // Insert at the beginning to reverse the path
-        HashNode<T, T>* predNode = predecessors.get(current);
-        if (predNode == nullptr) {// No path exists
+        if (distances.get(current)->value == std::numeric_limits<int>::max()) {
             return ""; 
         }
-        current = predNode->value;
-    }
-    path.insertAtBeginning(source); // Insert the source at the beginning
 
-    // return path;
-    std::string shortestpath = "";
-    NodeList<T>* temp = path.head;
-    while (temp != nullptr) {
-        shortestpath += temp->value;
-        temp = temp->next;
+        while (current != source) {
+            path.insertAtBeginning(current); // Insert at the beginning to reverse the path
+            HashNode<T, T>* predNode = predecessors.get(current);
+            if (predNode == nullptr) {// No path exists
+                return ""; 
+            }
+            current = predNode->value;
+        }
+        path.insertAtBeginning(source); // Insert the source at the beginning
+
+        // return path;
+        std::string shortestpath = "";
+        NodeList<T>* temp = path.head;
+        while (temp != nullptr) {
+            shortestpath += temp->value;
+            temp = temp->next;
+        }
+        return shortestpath;
     }
-    return shortestpath;
-}
+
     void dfs(T start){
         bool* visited = new bool[adjList.count];
         for (int i = 0; i < adjList.count; i++) {

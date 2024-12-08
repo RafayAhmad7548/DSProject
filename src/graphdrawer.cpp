@@ -11,12 +11,12 @@
 #include "qpainter.h"
 #include "qpoint.h"
 #include "qpushbutton.h"
+#include "qtimer.h"
 #include "qwidget.h"
 #include "qmenu.h"
 #include "graph.hpp"
 #include "hash_table.hpp"
 #include "linklist.hpp"
-#include "vehicle.hpp"
 
 #include <climits>
 #include <cstdio>
@@ -26,9 +26,6 @@ class GraphDrawer : public QWidget{
     Graph<char>& graph;
     char* keys;
     char* firstPressedKey;
-    int timePassed;
-
-    LinkList<Vehicle*>& vehicles;
 
      void drawArrow(QPainter& painter, QPointF start, QPointF end, int weight){
         QLineF line(start, end);
@@ -50,10 +47,9 @@ class GraphDrawer : public QWidget{
     }
 
     void Timer(){
-        // for(int i=0;i<graph.adjList.count;i++){
-        //     signalTimes.get(keys[i])->value--;
-        // }
-        timePassed++;
+        for(int i=0;i<graph.adjList.count;i++){
+            graph.adjList.get(keys[i])->curSignalTime--;
+        }
         repaint();
     }
 
@@ -81,25 +77,30 @@ protected:
             painter.setBrush(Qt::gray);
             QPoint center = graph.adjList.get(keys[i])->center;
             painter.drawEllipse(center, 20, 20);
-            painter.drawText(graph.adjList.get(keys[i])->center, QString(keys[i]));
+            painter.drawText(center, QString(keys[i]));
 
-            // painter.setBrush(Qt::green);
-            // int time = signalTimes.get(keys[i])->value - timePassed;
-            // painter.drawEllipse(center+QPoint(20, -20), 10, 10);
-            // painter.drawText(center+QPoint(15, -15), QString::number(time));
-        }
-
-        for(int i=0;i<vehicles.size;i++){
+            HashNode<char, LinkList<Edge<char>>>*& node = graph.adjList.get(keys[i]);
+            int time = node->curSignalTime;
+            if(time == 0){
+                node->signalState = !node->signalState;
+                node->curSignalTime = node->signalTime;
+            }
+            if(node->signalState) painter.setBrush(Qt::green);
+            else painter.setBrush(Qt::red);
             
+            painter.drawEllipse(center+QPoint(20, -20), 10, 10);
+            painter.drawText(center+QPoint(15, -15), QString::number(time));
         }
+
     }
 
     void mousePressEvent(QMouseEvent* event) override{
+        qDebug()<<event->pos();
         if(event->button() == Qt::LeftButton){
             for(int i=0;i<graph.adjList.count;i++){
                 QPoint center = graph.adjList.get(keys[i])->center;
                 if(QPoint(event->pos() - center).manhattanLength() <= 20){
-                    qDebug()<<keys[i];
+                    qDebug()<<"[LOG]: ADDING EDGE:"<<keys[i];
                     if(firstPressedKey == nullptr) firstPressedKey = &keys[i];
                     else{
                         bool ok;
@@ -133,7 +134,6 @@ protected:
             removeVertex = menu.addAction("Remove Vertex");
             removeEdge = menu.addAction("Remove Edge");
             addBlock = menu.addAction("Add Block");
-            qDebug()<<"test";
         }
 
         QAction* selected = menu.exec(event->globalPos());
@@ -166,7 +166,7 @@ protected:
             std::string vertex = QInputDialog::getText(nullptr, "", "Enter Edge char", QLineEdit::Normal, "", &ok).trimmed().toStdString();
             if(ok && !vertex.empty()){
                 NodeList<Edge<char>>* temp = graph.adjList.get(clicked)->value.head;
-                while(temp->value.to != vertex[0] && temp != nullptr){
+                while(temp != nullptr && temp->value.to != vertex[0]){
                     temp = temp->next;
                 }
                 if(temp != nullptr){
@@ -184,13 +184,13 @@ protected:
     }
 
   public:
-    GraphDrawer(Graph<char>& graph, LinkList<Vehicle*>& vehicles, QWidget* parent=nullptr) : QWidget(parent), graph(graph), vehicles(vehicles){
+    GraphDrawer(Graph<char>& graph, QWidget* parent=nullptr) : QWidget(parent), graph(graph){
+        this->setFixedSize(1000, 1000);
         keys = nullptr;
-        timePassed = 0;
 
-        // QTimer* timer = new QTimer(this);
-        // QObject::connect(timer, &QTimer::timeout, this, &GraphDrawer::Timer);
-        // timer->start(1000);
+        QTimer* timer = new QTimer(this);
+        QObject::connect(timer, &QTimer::timeout, this, &GraphDrawer::Timer);
+        timer->start(1000);
         init();
     }
     ~GraphDrawer(){
